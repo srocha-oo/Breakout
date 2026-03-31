@@ -8,15 +8,18 @@
 import SpriteKit
 import GameplayKit
 
-class GameScene: SKScene {
+class GameScene: SKScene, SKPhysicsContactDelegate {
     var loseZone = SKSpriteNode()
     var brick = SKSpriteNode()
     var paddle = SKSpriteNode()
     var ball = SKShapeNode()
     override func didMove(to view: SKView) {
         //This stuff happens once (when the app opens)
+        physicsWorld.contactDelegate = self
+        self.physicsBody = SKPhysicsBody(edgeLoopFrom: frame)
         createBackground()
         resetGame()
+        kickBall()
     }
     func resetGame () {
         // this stuff happens before each game starts
@@ -25,6 +28,10 @@ class GameScene: SKScene {
         makeBrick()
         makeLoseZone()
         
+    }
+    func kickBall () {
+        ball.physicsBody?.isDynamic = true
+        ball.physicsBody?.applyImpulse(CGVector(dx: 3, dy: 5))
     }
     
     func createBackground () {
