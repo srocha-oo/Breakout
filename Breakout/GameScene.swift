@@ -193,8 +193,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func didBegin(_ contact: SKPhysicsContact) {
         // ask each brick, "Is it you?"
         for brick in bricks {
-            if contact.bodyA.node?.name == "brick" ||
-                contact.bodyB.node?.name == "brick" {
+            if contact.bodyA.node === brick ||
+                contact.bodyB.node === brick {
                 score += 1
                 updateLables()
                 if brick.color == .blue {
@@ -203,7 +203,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 else if brick.color == .orange {
                     brick.color = .green // orange bricks turn green
                 }
-                else { // must be a green brick. which get removed
+                else { // must be a green brick, which get removed
                     brick.removeFromParent()
                     removedBricks += 1
                     if removedBricks == bricks.count {
@@ -237,6 +237,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             playLabel.text = "You Lost! Tap to play again"
         }
         
+    }
+    override func update(_ currentTime: TimeInterval) {
+        if abs(ball.physicsBody!.velocity.dx) < 100 {
+            // ball has stalled in x direction, so kick it randomly horizontally
+            ball.physicsBody!.applyImpulse(CGVector(dx: CGFloat.random(in: -3...3), dy: 0))
+        }
+        if abs(ball.physicsBody!.velocity.dy) < 100 {
+            // ball has stalled in y direction, so kick it randomly vertically
+            ball.physicsBody!.applyImpulse(CGVector(dx: 0, dy: CGFloat.random(in: -3...3)))
+        }
     }
 }
 
